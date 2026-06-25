@@ -1,0 +1,18 @@
+# Executaveis e saidas de compilacao
+*.exe
+*.o
+*.obj
+*.out
+
+# Arquivos temporarios do editor e do sistema
+*.tmp
+*.log
+*.stackdump
+
+# Pasta de build comum
+build/
+bin/
+
+# Arquivos do Windows
+Thumbs.db
+Desktop.ini
