@@ -1,51 +1,107 @@
 # Sistema de Consulta Eficiente com Tabela Hash e Filtro de Bloom
 
-Projeto em C para consulta rápida de usuários cadastrados usando duas estruturas complementares:
+Projeto desenvolvido em C para realizar consultas rápidas de usuários utilizando duas estruturas de dados complementares:
 
-* Tabela Hash para busca exata;
-* Filtro de Bloom para reduzir consultas desnecessárias.
+* **Tabela Hash** para armazenamento e busca exata dos usuários;
+* **Filtro de Bloom** para reduzir consultas desnecessárias à Tabela Hash, aumentando a eficiência do sistema.
 
-Esta versão do repositório contém a parte do **Integrante 2**, responsável pela implementação do **Filtro de Bloom**.
+O projeto foi desenvolvido para a disciplina de **Estruturas de Dados**.
 
-## Estrutura atual
+---
 
-* `bloom.h` - interface pública do Filtro de Bloom;
-* `bloom.c` - implementação do Filtro de Bloom e funções hash;
-* `hash.h` - interface pública da Tabela Hash;
-* `hash.c` - implementação da Tabela Hash.
+# Estrutura do Projeto
 
-## O que está implementado no Filtro de Bloom
+```text
+Projeto-LAB-ED2/
+│
+├── src/
+│   ├── main.c
+│   ├── hash.c
+│   ├── hash.h
+│   ├── bloom.c
+│   ├── bloom.h
+│   └── gerar_usuarios.c
+│
+├── data/
+│   ├── usuarios.txt
+│   ├── usuarios1000.txt
+│   ├── usuarios10000.txt
+│   ├── usuarios100000.txt
+│   ├── consultas1000.txt
+│   ├── consultas10000.txt
+│   └── consultas100000.txt
+│
+├── README.md
+└── .gitignore
+```
 
-* criação e destruição do filtro;
+---
+
+# Funcionalidades
+
+O sistema permite:
+
+* Inserir usuários manualmente;
+* Consultar usuários cadastrados;
+* Carregar usuários a partir de arquivos de texto;
+* Consultar usuários utilizando primeiro o Filtro de Bloom;
+* Confirmar consultas utilizando a Tabela Hash;
+* Visualizar estatísticas da Tabela Hash;
+* Visualizar estatísticas do Filtro de Bloom;
+* Executar experimentos de desempenho com diferentes volumes de dados.
+
+---
+
+# Implementação
+
+## Tabela Hash
+
+A Tabela Hash foi implementada utilizando:
+
+* função hash própria;
+* tratamento de colisões por encadeamento externo;
+* inserção de usuários;
+* busca de usuários;
+* estatísticas de utilização.
+
+## Filtro de Bloom
+
+O Filtro de Bloom foi implementado utilizando:
+
 * vetor de bits;
-* inserção de usuários no filtro;
-* consulta de usuários no filtro;
-* uso de múltiplas funções hash;
-* estatísticas básicas do filtro;
-* apoio à medição de falsos positivos.
+* múltiplas funções hash;
+* inserção de usuários;
+* consulta probabilística;
+* medição de falsos positivos.
 
-## Requisitos
+---
 
-* compilador C compatível com C99;
-* `gcc` instalado e disponível no terminal.
+# Requisitos
 
-## Como compilar o projeto
+* Compilador compatível com o padrão C99;
+* GCC instalado.
 
-No Windows com `gcc` no `PATH`:
+---
 
-```powershell
-gcc -Wall -Wextra -std=c99 main.c bloom.c hash.c -o projeto.exe
+# Como Compilar
+
+```bash
+gcc -Wall -Wextra -std=c99 src/main.c src/hash.c src/bloom.c -o projeto
 ```
 
-Para executar:
+---
 
-```powershell
-.\projeto.exe
+# Como Executar
+
+```bash
+./projeto
 ```
 
-## Formato dos dados
+---
 
-Os usuários devem estar em um arquivo de texto, um por linha.
+# Arquivos de Entrada
+
+Os usuários são armazenados em arquivos de texto, contendo um usuário por linha.
 
 Exemplo:
 
@@ -55,29 +111,73 @@ maria98
 pedro45
 ```
 
-## Como funciona o Filtro de Bloom
+Também são utilizados arquivos específicos para os experimentos:
 
-O Filtro de Bloom é usado antes da Tabela Hash.
+* usuarios1000.txt
+* usuarios10000.txt
+* usuarios100000.txt
+* consultas1000.txt
+* consultas10000.txt
+* consultas100000.txt
 
-Quando um usuário é inserido, o sistema marca posições no vetor de bits usando funções hash.
-Na consulta, se alguma posição estiver com valor 0, o usuário definitivamente não existe.
-Se todas as posições estiverem marcadas, o usuário possivelmente existe, então a Tabela Hash é consultada para confirmar.
+---
 
-## Observações
+# Funcionamento
 
-* O Filtro de Bloom não utiliza biblioteca pronta;
-* As funções hash foram implementadas manualmente;
-* O filtro pode gerar falsos positivos;
-* Não há falsos negativos para usuários que foram inseridos corretamente;
-* Remoção não foi implementada porque não é obrigatória no enunciado.
+Quando um usuário é consultado, o sistema realiza os seguintes passos:
 
-## Referências
+1. Consulta o Filtro de Bloom.
+2. Se o Bloom indicar que o usuário definitivamente não existe, a busca termina imediatamente.
+3. Caso o Bloom indique que o usuário pode existir, a Tabela Hash é consultada para confirmar.
 
-* Conceitos de Filtro de Bloom;
-* Conceitos de Tabela Hash;
-* Documentação da linguagem C;
+Essa estratégia reduz o número de consultas realizadas diretamente na Tabela Hash.
+
+---
+
+# Experimentos
+
+O sistema realiza experimentos utilizando bases de dados com:
+
+* 1.000 usuários;
+* 10.000 usuários;
+* 100.000 usuários.
+
+Durante os experimentos são coletadas as seguintes métricas:
+
+* tempo de busca utilizando apenas a Tabela Hash;
+* tempo de busca utilizando o Filtro de Bloom;
+* quantidade de falsos positivos;
+* quantidade de consultas evitadas pelo Filtro de Bloom.
+
+---
+
+# Observações
+
+* A implementação não utiliza bibliotecas prontas para Tabela Hash ou Filtro de Bloom.
+* Todas as funções hash foram implementadas manualmente.
+* O Filtro de Bloom pode gerar falsos positivos.
+* Não existem falsos negativos para elementos previamente inseridos.
+* A remoção de usuários não foi implementada por não ser um requisito do projeto.
+
+---
+
+# Integrantes
+
+* Integrante 1 — Implementação da Tabela Hash.
+* Integrante 2 — Implementação do Filtro de Bloom.
+* Integrante 3 — Integração do sistema, experimentos e análise dos resultados.
+
+---
+
+# Referências
+
+* Documentação oficial da linguagem C.
 * Material da disciplina de Estruturas de Dados.
+* Conceitos de Tabela Hash.
+* Conceitos de Filtro de Bloom.
 
-## Licença
+---
 
-Projeto acadêmico para disciplina de Estruturas de Dados.
+# Licença
+
+Projeto acadêmico desenvolvido para a disciplina de Laboratorio de Estruturas de Dados II.
