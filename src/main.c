@@ -10,12 +10,14 @@
 #define TAM_BLOOM 1000000
 #define NUM_HASHES 3
 
+/* Pausa o programa para o usuario conseguir ler a mensagem */
 void pausar(void) {
     printf("\nPressione ENTER para continuar...");
     fflush(stdout);
     getchar();
 }
 
+/* Insere um usuario na tabela hash e no filtro de Bloom */
 void inserir_usuario(HashTable *hash, BloomFilter *bloom) {
     char usuario[100];
 
@@ -28,6 +30,7 @@ void inserir_usuario(HashTable *hash, BloomFilter *bloom) {
 
     while (getchar() != '\n');
 
+    /* Primeiro insere na hash, se ainda nao existir */
     if (hash_inserir(hash, usuario)) {
         bloom_inserir(bloom, usuario);
         printf("\nUsuario inserido com sucesso!\n");
@@ -38,6 +41,7 @@ void inserir_usuario(HashTable *hash, BloomFilter *bloom) {
     pausar();
 }
 
+/* Consulta primeiro no Bloom e depois confirma na hash */
 void consultar_usuario(HashTable *hash, BloomFilter *bloom) {
     char usuario[100];
 
@@ -50,12 +54,14 @@ void consultar_usuario(HashTable *hash, BloomFilter *bloom) {
 
     while (getchar() != '\n');
 
+    /* Se o Bloom disser que nao existe, nao precisa consultar a hash */
     if (!bloom_consultar(bloom, usuario)) {
         printf("\nUsuario definitivamente nao existe.\n");
         pausar();
         return;
     }
 
+    /* Se o Bloom disser que talvez exista, confirma na hash */
     if (hash_buscar(hash, usuario)) {
         printf("\nUsuario encontrado.\n");
     } else {
@@ -65,6 +71,7 @@ void consultar_usuario(HashTable *hash, BloomFilter *bloom) {
     pausar();
 }
 
+/* Carrega os usuarios de um arquivo texto */
 void carregar_usuarios(HashTable *hash, BloomFilter *bloom, const char *arquivo) {
     FILE *fp;
     char usuario[100];
@@ -77,6 +84,7 @@ void carregar_usuarios(HashTable *hash, BloomFilter *bloom, const char *arquivo)
         return;
     }
 
+    /* Le cada linha do arquivo e insere nas duas estruturas */
     while (fgets(usuario, sizeof(usuario), fp) != NULL) {
         usuario[strcspn(usuario, "\n")] = '\0';
 
@@ -94,6 +102,7 @@ void carregar_usuarios(HashTable *hash, BloomFilter *bloom, const char *arquivo)
     printf("%d usuarios carregados com sucesso!\n", total);
 }
 
+/* Executa um teste comparando busca com Bloom e sem Bloom */
 void executar_experimento(const char *arquivo_usuarios,
                           const char *arquivo_consultas,
                           int quantidade) {
@@ -111,7 +120,8 @@ void executar_experimento(const char *arquivo_usuarios,
     int falsos_positivos = 0;
     int consultas_evitadas = 0;
 
-        hash = hash_criar(TAM_HASH);
+    /* Cria uma hash e um Bloom novos para cada experimento */
+    hash = hash_criar(TAM_HASH);
     bloom = bloom_criar(TAM_BLOOM, NUM_HASHES);
 
     if (hash == NULL || bloom == NULL) {
@@ -128,6 +138,7 @@ void executar_experimento(const char *arquivo_usuarios,
         return;
     }
 
+    /* Carrega os usuarios cadastrados */
     while (fgets(usuario, sizeof(usuario), fp) != NULL) {
         usuario[strcspn(usuario, "\n")] = '\0';
 
@@ -150,6 +161,7 @@ void executar_experimento(const char *arquivo_usuarios,
         return;
     }
 
+    /* Mede o tempo buscando direto na tabela hash */
     inicio = clock();
 
     while (fgets(usuario, sizeof(usuario), fp) != NULL) {
@@ -169,6 +181,7 @@ void executar_experimento(const char *arquivo_usuarios,
 
     fp = fopen(arquivo_consultas, "r");
 
+    /* Mede o tempo consultando primeiro no Bloom */
     inicio = clock();
 
     while (fgets(usuario, sizeof(usuario), fp) != NULL) {
@@ -205,6 +218,7 @@ void executar_experimento(const char *arquivo_usuarios,
     bloom_destruir(bloom);
 }
 
+/* Executa os experimentos pedidos no trabalho */
 void executar_experimentos(void) {
     printf("\nQuantidade   Tempo sem Bloom    Tempo com Bloom    Falsos Positivos   Consultas Evitadas\n");
     printf("-----------------------------------------------------------------------------------------\n");
@@ -216,11 +230,13 @@ void executar_experimentos(void) {
     pausar();
 }
 
+/* Funcao principal do programa */
 int main(void) {
     HashTable *hash;
     BloomFilter *bloom;
     int opcao;
 
+    /* Cria as estruturas principais */
     hash = hash_criar(TAM_HASH);
     bloom = bloom_criar(TAM_BLOOM, NUM_HASHES);
 
@@ -229,8 +245,10 @@ int main(void) {
         return 1;
     }
 
+    /* Carrega os usuarios iniciais */
     carregar_usuarios(hash, bloom, "data/usuarios.txt");
 
+    /* Menu principal */
     do {
         printf("\n==============================\n");
         printf("1 - Inserir usuario\n");
@@ -285,6 +303,7 @@ int main(void) {
 
     } while (opcao != 0);
 
+    /* Libera a memoria antes de finalizar */
     hash_destruir(hash);
     bloom_destruir(bloom);
 
