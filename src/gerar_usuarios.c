@@ -40,13 +40,13 @@ void gerar_arquivo(const char *nome_arquivo, int quantidade, const char *prefixo
 int main(void) {
     srand(time(NULL));
 
-    gerar_arquivo("data/usuarios1000.txt", 1000, "u");
-    gerar_arquivo("data/usuarios10000.txt", 10000, "u");
-    gerar_arquivo("data/usuarios100000.txt", 100000, "u");
+    gerar_arquivo("data/usuarios1000.txt", 1000, "");
+gerar_arquivo("data/usuarios10000.txt", 10000, "");
+gerar_arquivo("data/usuarios100000.txt", 100000, "");
 
-    gerar_arquivo("data/consultas1000.txt", 1000, "c");
-    gerar_arquivo("data/consultas10000.txt", 10000, "c");
-    gerar_arquivo("data/consultas100000.txt", 100000, "c");
+gerar_arquivo("data/consultas1000.txt", 1000, "");
+gerar_arquivo("data/consultas10000.txt", 10000, "");
+gerar_arquivo("data/consultas100000.txt", 100000, "");
 
     return 0;
 }

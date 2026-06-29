@@ -119,7 +119,8 @@ void executar_experimento(const char *arquivo_usuarios,
     int consultas = 0;
     int falsos_positivos = 0;
     int consultas_evitadas = 0;
-
+double taxa_falsos_positivos;
+double tempo_medio;
     /* Cria uma hash e um Bloom novos para cada experimento */
     hash = hash_criar(TAM_HASH);
     bloom = bloom_criar(TAM_BLOOM, NUM_HASHES);
@@ -205,14 +206,29 @@ void executar_experimento(const char *arquivo_usuarios,
     fim = clock();
     tempo_com_bloom = (double)(fim - inicio) / CLOCKS_PER_SEC;
 
+    taxa_falsos_positivos = 0.0;
+
+if (consultas > 0) {
+    taxa_falsos_positivos =
+        (double)falsos_positivos * 100.0 / consultas;
+
+    tempo_medio =
+        tempo_com_bloom / consultas;
+} else {
+    tempo_medio = 0.0;
+}
+
     fclose(fp);
 
-    printf("%-12d %-18.6f %-18.6f %-18d %-18d\n",
-           quantidade,
-           tempo_sem_bloom,
-           tempo_com_bloom,
-           falsos_positivos,
-           consultas_evitadas);
+    printf("%-7d %-15.6f %-16.6f %-11d %-10d %-18d %-8.2f %-14.8f\n",
+       quantidade,
+       tempo_sem_bloom,
+       tempo_com_bloom,
+       consultas,
+       consultas_evitadas,
+       falsos_positivos,
+       taxa_falsos_positivos,
+       tempo_medio);
 
     hash_destruir(hash);
     bloom_destruir(bloom);
@@ -220,8 +236,8 @@ void executar_experimento(const char *arquivo_usuarios,
 
 /* Executa os experimentos pedidos no trabalho */
 void executar_experimentos(void) {
-    printf("\nQuantidade   Tempo sem Bloom    Tempo com Bloom    Falsos Positivos   Consultas Evitadas\n");
-    printf("-----------------------------------------------------------------------------------------\n");
+   printf("\nQtd    Tempo Hash(s)    Tempo Bloom(s)   Consultas   Evitadas   Falsos Positivos   Taxa(%%)   Tempo Medio\n");
+printf("-------------------------------------------------------------------------------------------------------------\n");
 
     executar_experimento("data/usuarios1000.txt", "data/consultas1000.txt", 1000);
     executar_experimento("data/usuarios10000.txt", "data/consultas10000.txt", 10000);

@@ -96,6 +96,18 @@ gcc -Wall -Wextra -std=c99 src/main.c src/hash.c src/bloom.c -o projeto
 ```bash
 ./projeto
 ```
+---
+
+# Gerando os Arquivos de Teste
+
+Caso seja necessário gerar novamente os arquivos utilizados nos experimentos, execute:
+
+```bash
+gcc -Wall -Wextra -std=c99 src/gerar_usuarios.c -o gerar_usuarios
+./gerar_usuarios
+```
+
+Esse programa gera automaticamente os arquivos de usuários e consultas utilizados nos experimentos com 1.000, 10.000 e 100.000 registros.
 
 ---
 
@@ -151,6 +163,70 @@ Durante os experimentos são coletadas as seguintes métricas:
 
 ---
 
+# Exemplo de Execução
+
+Ao executar o programa, o sistema apresenta o menu principal:
+
+```text
+10 usuarios carregados com sucesso!
+
+==============================
+1 - Inserir usuario
+2 - Consultar usuario
+3 - Estatisticas Hash
+4 - Estatisticas Bloom
+5 - Executar experimentos
+0 - Sair
+==============================
+Opcao:
+```
+
+### Exemplo de inserção
+
+```text
+Opcao: 1
+
+Novo usuario: analara123
+
+Usuario inserido com sucesso!
+```
+
+### Exemplo de consulta
+
+```text
+Opcao: 2
+
+Digite o usuario: analara123
+
+Usuario encontrado.
+```
+
+Caso o usuário não esteja cadastrado:
+
+```text
+Opcao: 2
+
+Digite o usuario: usuario999
+
+Usuario definitivamente nao existe.
+```
+
+### Exemplo de execução dos experimentos
+
+```text
+Opcao: 5
+
+Qtd    Tempo Hash(s)    Tempo Bloom(s)   Consultas   Evitadas   Falsos Positivos   Taxa(%)   Tempo Medio
+-------------------------------------------------------------------------------------------------------------
+1000    0.000181        0.000173         1000        1000       0                  0.00     0.00000017
+10000   0.002041        0.001820         10000       9998       2                  0.02     0.00000018
+100000  0.018545        0.017604         100000      97603      2397               2.40     0.00000018
+```
+
+Durante os experimentos, o sistema compara o tempo de consulta utilizando apenas a Tabela Hash e utilizando o Filtro de Bloom juntamente com a Tabela Hash. Também são apresentadas a quantidade de consultas realizadas, consultas evitadas, número de falsos positivos, taxa de falsos positivos e tempo médio de consulta.
+
+---
+
 # Observações
 
 * A implementação não utiliza bibliotecas prontas para Tabela Hash ou Filtro de Bloom.
@@ -163,18 +239,9 @@ Durante os experimentos são coletadas as seguintes métricas:
 
 # Integrantes
 
-* Integrante 1 — Implementação da Tabela Hash.
-* Integrante 2 — Implementação do Filtro de Bloom.
-* Integrante 3 — Integração do sistema, experimentos e análise dos resultados.
-
----
-
-# Referências
-
-* Documentação oficial da linguagem C.
-* Material da disciplina de Estruturas de Dados.
-* Conceitos de Tabela Hash.
-* Conceitos de Filtro de Bloom.
+* LUCAS — Implementação da Tabela Hash.
+* JORGE — Implementação do Filtro de Bloom.
+* ANA LARA — Integração do sistema, experimentos e análise dos resultados.
 
 ---
 
